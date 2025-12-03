@@ -4,7 +4,7 @@ A full-stack authentication system featuring secure Email/Password login and OAu
 
 ## **🚀 Live Demo**
 
-* **Frontend (User Interface):** [View Live Site](https://www.google.com/search?q=https://ravitejaatthiraju.github.io/flask-login-system/)  
+* **Frontend (User Interface):** [View Live Site](https://ravitejaatthiraju.github.io/flask-login-system/)  
 * **Backend (API):** [View Health Check](https://www.google.com/search?q=https://flask-login-system-u16r.onrender.com/)
 
 ## **🌟 Key Features**
