@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        .social-btn { transition: all 0.2s; }
+        .social-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .loader {
+            border: 2px solid #f3f3f3; border-top: 2px solid #fff; border-radius: 50%;
+            width: 16px; height: 16px; animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="glass-panel w-full max-w-md p-8 rounded-2xl shadow-2xl">
+        
+        <!-- Toggle Tabs -->
+        <div class="flex mb-8 bg-gray-100 p-1 rounded-lg">
+            <button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2 rounded-md text-sm font-semibold shadow-sm bg-white text-gray-800 transition-all">Login</button>
+            <button onclick="switchTab('signup')" id="tab-signup" class="flex-1 py-2 rounded-md text-sm font-semibold text-gray-500 hover:text-gray-700 transition-all">Sign Up</button>
+        </div>
+
+        <!-- Header -->
+        <div class="text-center mb-6">
+            <h2 id="formTitle" class="text-2xl font-bold text-gray-800">Welcome Back</h2>
+            <p id="formSubtitle" class="text-gray-500 text-sm mt-1">Enter your email to continue</p>
+        </div>
+
+        <!-- Social Login (Real OAuth) -->
+        <div class="grid grid-cols-2 gap-3 mb-6">
+            <!-- These now point to the backend routes -->
+            <a href="http://127.0.0.1:5000/auth/google" class="social-btn flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-decoration-none">
+                <i class="fa-brands fa-google text-red-500 mr-2"></i>
+                <span class="text-sm font-medium text-gray-700">Google</span>
+            </a>
+            <a href="http://127.0.0.1:5000/auth/linkedin" class="social-btn flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-decoration-none">
+                <i class="fa-brands fa-linkedin text-blue-700 mr-2"></i>
+                <span class="text-sm font-medium text-gray-700">LinkedIn</span>
+            </a>
+        </div>
+
+        <div class="relative flex items-center justify-center mb-6">
+            <hr class="w-full border-gray-300">
+            <span class="absolute bg-white px-3 text-xs text-gray-500 uppercase">Or with email</span>
+        </div>
+
+        <!-- Form -->
+        <form id="authForm" class="space-y-5">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-envelope"></i></span>
+                    <!-- Changed type to email and name to email -->
+                    <input type="email" id="email" name="email" required class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-50" placeholder="name@example.com">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" id="password" name="password" required class="pl-10 w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-500 outline-none bg-gray-50" placeholder="••••••••">
+                </div>
+            </div>
+
+            <div id="messageArea" class="hidden rounded-lg p-3 text-sm text-center font-medium"></div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700 transition-all shadow-lg flex justify-center items-center gap-2">
+                <span>Sign In</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </form>
+    </div>
+
+    <script>
+        let currentMode = 'login';
+        const form = document.getElementById('authForm');
+        const messageArea = document.getElementById('messageArea');
+
+        function switchTab(mode) {
+            currentMode = mode;
+            const loginTab = document.getElementById('tab-login');
+            const signupTab = document.getElementById('tab-signup');
+            const submitBtnText = document.querySelector('#submitBtn span');
+            
+            if (mode === 'login') {
+                loginTab.classList.replace('text-gray-500', 'text-gray-800');
+                loginTab.classList.add('bg-white', 'shadow-sm');
+                signupTab.classList.replace('text-gray-800', 'text-gray-500');
+                signupTab.classList.remove('bg-white', 'shadow-sm');
+                
+                document.getElementById('formTitle').textContent = 'Welcome Back';
+                submitBtnText.textContent = 'Sign In';
+            } else {
+                signupTab.classList.replace('text-gray-500', 'text-gray-800');
+                signupTab.classList.add('bg-white', 'shadow-sm');
+                loginTab.classList.replace('text-gray-800', 'text-gray-500');
+                loginTab.classList.remove('bg-white', 'shadow-sm');
+
+                document.getElementById('formTitle').textContent = 'Create Account';
+                submitBtnText.textContent = 'Create Account';
+            }
+            hideMessage();
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            const endpoint = currentMode === 'login' ? '/login' : '/signup';
+            
+            const btn = document.getElementById('submitBtn');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<div class="loader"></div> <span>Processing</span>';
+            btn.disabled = true;
+            btn.classList.add('opacity-75');
+
+            try {
+                const response = await fetch(`http://127.0.0.1:5000${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage('success', result.message);
+                    
+                    if (currentMode === 'signup') {
+                        form.reset();
+                        setTimeout(() => switchTab('login'), 1500);
+                    } else {
+                        // Pass email to dashboard
+                        localStorage.setItem('currentUser', data.email);
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    }
+                } else {
+                    if (response.status === 404 && currentMode === 'login') {
+                        showMessage('error', 'User not found. Redirecting to Signup...');
+                        setTimeout(() => switchTab('signup'), 1500);
+                    } else if (response.status === 409 && currentMode === 'signup') {
+                        showMessage('error', 'User already exists. Redirecting to Login...');
+                        setTimeout(() => switchTab('login'), 1500);
+                    } else {
+                        showMessage('error', result.message);
+                    }
+                }
+            } catch (error) {
+                console.error(error);
+                showMessage('error', 'Connection Error: Is the Python server running?');
+            } finally {
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                btn.classList.remove('opacity-75');
+            }
+        });
+
+        function showMessage(type, text) {
+            messageArea.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
+            messageArea.textContent = text;
+            if (type === 'success') {
+                messageArea.classList.add('bg-green-100', 'text-green-700');
+            } else {
+                messageArea.classList.add('bg-red-100', 'text-red-700');
+            }
+        }
+
+        function hideMessage() {
+            messageArea.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
