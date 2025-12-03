@@ -26,7 +26,7 @@ LINKEDIN_CLIENT_SECRET = os.getenv("LINKEDIN_CLIENT_SECRET")
 # This assumes you are using VS Code Live Server (port 5500) or similar.
 # If you are opening the file directly, the logic might need adjustment, 
 # but localhost:5500 is standard for development.
-DASHBOARD_URL = "http://127.0.0.1:5500/dashboard.html" 
+DASHBOARD_URL = "https://flask-login-system-u16r.onrender.com" 
 
 # In-memory database using EMAILS as keys
 USERS = {
